@@ -1,7 +1,7 @@
 import { dbService } from "myBase";
 import React, { useEffect, useState } from "react";
 import { collection, addDoc, serverTimestamp, getDocs, query, getDocsFromCache } from "firebase/firestore";
-const Home = () => {
+const Home = ({ userObj }) => {
     const [mweet, setMweet] = useState("");
     const [mweets, setMweets] = useState([]);
     const getMweets = async() => {
@@ -20,10 +20,12 @@ const Home = () => {
         getMweets();
     }, []);
     const onSubmit = async (event) => {
+        console.log("entered");
         event.preventDefault();
         await addDoc(collection(dbService, "mweets"), {
             mweet,
             createdAt: serverTimestamp(),
+            createId: userObj.uid,
         })
         setMweet("");
     }
@@ -42,7 +44,7 @@ const Home = () => {
                     <div key={mweet.id}>
                         <h4>{mweet.mweet}</h4>
                     </div>
-                ))};
+                ))}
             </div>
         </div>
     )
