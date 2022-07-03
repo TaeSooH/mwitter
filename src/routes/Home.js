@@ -1,32 +1,28 @@
 import { dbService } from "myBase";
 import React, { useEffect, useState } from "react";
-import { collection, addDoc, serverTimestamp, getDocs, query, getDocsFromCache } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, getDocs, query, getDocsFromCache, orderBy, onSnapshot } from "firebase/firestore";
+import Mweet from "components/Mweet";
 const Home = ({ userObj }) => {
     const [mweet, setMweet] = useState("");
     const [mweets, setMweets] = useState([]);
-    const getMweets = async() => {
-        const q = query(collection(dbService, "mweets"));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            const mweetObj = {
-                ...doc.data(),
-                id: doc.id,
-            };
-            console.log(doc.id, " => ", doc.data());
-            setMweets(prev => [mweetObj, ...prev]);
-        });
-    }
     useEffect( () => {
-        getMweets();
+        const q = query(collection(dbService, "mweets"),orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const mweetArr = snapshot.docs.map((document) => ({
+                id: document.id,
+                ...document.data(),
+            }));
+            setMweets(mweetArr);
+        });
     }, []);
     const onSubmit = async (event) => {
-        console.log("entered");
         event.preventDefault();
         await addDoc(collection(dbService, "mweets"), {
-            mweet,
+            text: mweet,
             createdAt: serverTimestamp(),
             createId: userObj.uid,
         })
+        console.log(mweets);
         setMweet("");
     }
     const onChange = (event) => {
@@ -41,9 +37,7 @@ const Home = ({ userObj }) => {
             </form>
             <div>
                 {mweets.map( (mweet) => (
-                    <div key={mweet.id}>
-                        <h4>{mweet.mweet}</h4>
-                    </div>
+                   <Mweet key={mweet.id} mweetObj={mweet} isOwner={mweet.createId === userObj.uid}/>
                 ))}
             </div>
         </div>
