@@ -4,6 +4,7 @@ import { signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from 'firebas
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTwitter, faGoogle, faGithub, } from "@fortawesome/free-brands-svg-icons";
+import AuthForm from "components/authForm";
 const Auth = () => {
     
     
@@ -25,7 +26,7 @@ const Auth = () => {
                 size="3x"
                 style={{ marginBottom: 30 }}
             />
-            <authForm />
+            <AuthForm />
             <div className="authBtns">
                 <button onClick={onSocialClick} name="google" className="authBtn">
                     Continue with Google <FontAwesomeIcon icon={faGoogle} />

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { auth } from "myBase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 const inputStyles = {};
 
-const authForm = () => {
+const AuthForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [newAccount, setNewAccount] = useState(true);  
@@ -43,4 +45,4 @@ const authForm = () => {
         </div>
     )
 }
-export default authForm
+export default AuthForm
